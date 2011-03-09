@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:MobileApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					 xmlns:s="library://ns.adobe.com/flex/spark" 
+					 firstView="views.QNXSwipeEventsHome"
+					 creationComplete="mobileapplication1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import qnx.events.QNXApplicationEvent;
+			import qnx.system.QNXApplication;
+			
+			import views.DetailView;
+			
+			private var startX:Number;
+			private var startY:Number;
+			private var endX:Number;
+			private var endY:Number;
+
+			protected function mobileapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				QNXApplication.qnxApplication.addEventListener(QNXApplicationEvent.SWIPE_START,onSwipeStart);
+			}
+
+
+			protected function onSwipeStart(event:QNXApplicationEvent):void
+			{
+				stage.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+				stage.addEventListener(MouseEvent.MOUSE_UP,onMouseUp);
+			}
+
+			
+			protected function onMouseDown(event:MouseEvent):void
+			{
+				startX = event.localX;
+				trace('mouse down: ' + event.localX);
+			}
+
+			protected function onMouseUp(event:MouseEvent):void
+			{
+				endX = event.localX;
+				trace('mouse up: ' + event.localX);
+				trace('difference: ' + (startX - endX));
+				
+				var diff:Number = startX - endX;
+				// if it's negative, we're moving right
+				if(diff>0)
+				{
+					trace('popView');
+					navigator.popView()
+				} else {
+					trace('pushView');
+					navigator.pushView(DetailView);
+				}
+				
+				stage.removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+				stage.removeEventListener(MouseEvent.MOUSE_UP,onMouseUp);
+				
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</s:MobileApplication>
